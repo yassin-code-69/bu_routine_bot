@@ -3,6 +3,7 @@ let teacherMapping = {};
 let rawExcelData = [];
 
 // ১. সম্পূর্ণ ডাটাবেজ (Full Data Provided)
+const GITHUB_RAW_URL = "https://github.com/yassin-code-69/bu_routine_bot/blob/main/Ramadan%20Class%20Routine%20of%20Spring%20-2026.xlsx";
 const initialCourses = `CSE-1101: Introduction of Computer Science
 CSE-1102: Analog Electronics
 CSE-1103: Analog Electronics (Lab)
