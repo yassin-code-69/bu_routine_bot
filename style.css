@@ -1,91 +1,124 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RoutinePro | CSE Dept</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-</head>
-<body>
+:root {
+    --bg: #f0f2f5; --card: #ffffff; --text: #1c1e21; --subtext: #65676b;
+    --primary: #6366f1; --primary-soft: rgba(99, 102, 241, 0.1);
+    --border: #e4e6eb; --glass: rgba(255, 255, 255, 0.85); --accent: #ec4899;
+}
 
-    <nav class="glass-nav">
-        <div class="nav-wrapper">
-            <div class="logo">✨ Routine<span>Pro</span></div>
-            <div class="nav-tools">
-                <button onclick="toggleModal()" class="icon-btn" title="Settings">⚙️</button>
-                <button id="themeToggle" class="icon-btn" title="Toggle Theme">🌙</button>
-            </div>
-        </div>
-    </nav>
+[data-theme="dark"] {
+    --bg: #0f0f11; --card: #18181b; --text: #e4e6eb; --subtext: #b0b3b8;
+    --primary: #818cf8; --primary-soft: rgba(129, 140, 248, 0.15);
+    --border: #2f3036; --glass: rgba(24, 24, 27, 0.9); --accent: #f472b6;
+}
 
-    <main class="container">
-        <section class="glass-card dashboard">
-            <div class="upload-section" onclick="document.getElementById('fileInput').click()">
-                <div class="icon-box">📂</div>
-                <div class="upload-text">
-                    <h3>Upload Routine File</h3>
-                    <p>Supports .xlsx & .xls formats</p>
-                </div>
-                <input type="file" id="fileInput" accept=".xlsx, .xls" hidden>
-                <div id="fileStatus" class="status-indicator">No file chosen</div>
-            </div>
+body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: 'Outfit', sans-serif; transition: 0.3s ease;
+}
 
-            <div class="search-bar">
-                <div class="input-group">
-                    <label>DEPT</label>
-                    <input type="text" id="dept" value="CSE">
-                </div>
-                <div class="input-group">
-                    <label>BATCH</label>
-                    <input type="text" id="batch" value="69">
-                </div>
-                <div class="input-group">
-                    <label>SEC</label>
-                    <input type="text" id="section" value="A">
-                </div>
-                <button onclick="searchRoutine()" class="btn-primary">🔍 FIND SCHEDULE</button>
-            </div>
-            
-            <div class="action-buttons">
-                <button onclick="saveAsPDF()" class="btn-pdf">📄 Save as PDF</button>
-                <button onclick="captureSchedule()" class="btn-capture">📸 Save as Image (HD)</button>
-            </div>
-        </section>
+/* Nav */
+.glass-nav { position: sticky; top: 0; z-index: 50; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.nav-wrapper { max-width: 1000px; margin: 0 auto; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+.logo { font-size: 24px; font-weight: 800; letter-spacing: -1px; }
+.logo span { color: var(--primary); }
+.icon-btn { background: var(--primary-soft); border: none; font-size: 18px; padding: 10px; border-radius: 12px; cursor: pointer; transition: 0.2s; color: var(--text); }
+.icon-btn:hover { background: var(--primary); color: white; transform: scale(1.1); }
 
-        <section id="resultSection" class="result-area hidden">
-            <div class="result-header">
-                <h2 id="routineTitle">Class Schedule</h2>
-                <span id="classCount" class="count-badge">0 Classes</span>
-            </div>
-            
-            <div id="routineList">
-                </div>
-        </section>
-    </main>
+/* Layout */
+.container { max-width: 950px; margin: 40px auto; padding: 0 20px; }
 
-    <div id="mappingModal" class="modal-backdrop hidden">
-        <div class="modal-box">
-            <div class="modal-head">
-                <h2>🛠 Configurations</h2>
-                <button onclick="toggleModal()" class="close-btn">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="config-group">
-                    <label>Course Database (CODE: Name)</label>
-                    <textarea id="courseMapData" spellcheck="false"></textarea>
-                </div>
-                <div class="config-group">
-                    <label>Teacher Database (INIT: Name)</label>
-                    <textarea id="teacherMapData" spellcheck="false"></textarea>
-                </div>
-            </div>
-            <button onclick="saveMappings()" class="btn-save">Save Changes</button>
-        </div>
-    </div>
+.glass-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 24px; padding: 30px; margin-bottom: 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+}
 
-    <script src="script.js"></script>
-</body>
-</html>
+/* Upload Section */
+.upload-section {
+    display: flex; align-items: center; gap: 20px; padding: 20px;
+    border: 2px dashed var(--border); border-radius: 18px; cursor: pointer; transition: 0.3s;
+}
+.upload-section:hover { border-color: var(--primary); background: var(--primary-soft); }
+.icon-box { font-size: 32px; }
+.upload-text h3 { margin: 0; font-size: 16px; font-weight: 600; }
+.upload-text p { margin: 4px 0 0; font-size: 13px; color: var(--subtext); }
+.status-indicator { margin-left: auto; font-size: 13px; font-weight: 600; color: var(--primary); }
+
+/* Search Bar */
+.search-bar { display: flex; gap: 15px; margin-top: 25px; align-items: flex-end; }
+.input-group { flex: 1; }
+.input-group label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 6px; color: var(--subtext); letter-spacing: 0.5px; }
+.input-group input {
+    width: 100%; padding: 14px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 12px; color: var(--text); font-weight: 500; outline: none; box-sizing: border-box;
+}
+.btn-primary {
+    padding: 14px 28px; background: var(--primary); color: white; border: none;
+    border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; height: 48px;
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 5px 15px var(--primary-soft); }
+
+/* Action Buttons */
+.action-buttons { display: flex; gap: 10px; margin-top: 15px; }
+.btn-pdf { flex: 1; padding: 12px; background: #ef4444; color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.btn-pdf:hover { background: #dc2626; }
+.btn-capture { flex: 1; padding: 12px; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 12px; font-weight: 600; cursor: pointer; }
+.btn-capture:hover { background: var(--border); }
+
+/* Routine Grid System (Day Grouping) */
+.result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+.count-badge { background: var(--primary); color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+
+.day-container { margin-bottom: 35px; animation: slideUp 0.5s ease forwards; }
+
+.day-title {
+    font-size: 20px; font-weight: 800; color: var(--primary);
+    margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;
+    display: flex; align-items: center; gap: 12px;
+}
+.day-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* Fixed Grid Card */
+.routine-card {
+    display: grid;
+    /* Fixed Column Widths for Perfect Alignment */
+    grid-template-columns: 140px 1fr 200px; 
+    align-items: center; gap: 20px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 22px 28px; margin-bottom: 15px;
+    position: relative; overflow: hidden; transition: 0.2s;
+}
+.routine-card:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08); }
+.routine-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--primary); }
+
+.time-col { display: flex; flex-direction: column; gap: 8px; }
+.time-display { font-size: 17px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; }
+.room-badge { background: var(--primary-soft); color: var(--primary); padding: 5px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; width: fit-content; }
+
+.course-col { display: flex; flex-direction: column; gap: 4px; }
+.course-code { font-size: 13px; font-weight: 800; color: var(--accent); letter-spacing: 0.5px; }
+.course-name { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.4; }
+
+.teacher-col { display: flex; align-items: center; justify-content: flex-end; gap: 12px; text-align: right; border-left: 1px solid var(--border); padding-left: 20px; }
+.teacher-name { font-size: 14px; font-weight: 500; color: var(--subtext); }
+.teacher-avatar { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); padding: 2px; }
+
+@keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+.hidden { display: none !important; }
+
+/* Modal */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.modal-box { background: var(--card); padding: 30px; border-radius: 24px; width: 90%; max-width: 600px; border: 1px solid var(--border); }
+textarea { width: 100%; height: 140px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 12px; padding: 15px; resize: none; font-family: monospace; box-sizing: border-box; }
+.btn-save { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 20px; }
+
+/* --- PRINT / PDF STYLES --- */
+@media print {
+    .glass-nav, .dashboard, .action-buttons, .modal-backdrop { display: none !important; }
+    body { background: white !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .container { max-width: 100%; margin: 0; padding: 0; }
+    .result-area { box-shadow: none !important; border: none !important; margin: 0 !important; }
+    .routine-card { break-inside: avoid; border: 1px solid #ddd !important; box-shadow: none !important; page-break-inside: avoid; }
+    .day-title { color: black !important; border-bottom: 2px solid #000; }
+    .routine-card::before { background: black !important; }
+    .course-code { color: black !important; }
+}
