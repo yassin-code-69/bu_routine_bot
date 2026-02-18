@@ -14,7 +14,17 @@ body {
     margin: 0; background: var(--bg); color: var(--text);
     font-family: 'Outfit', sans-serif; transition: 0.3s ease;
 }
+/* Nav */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0px;
+}
 
+.logo img {
+    height: 84px;   /* 👈 main control */
+    width: auto;
+}
 /* Nav */
 .glass-nav { position: sticky; top: 0; z-index: 50; background: var(--glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
 .nav-wrapper { max-width: 1000px; margin: 0 auto; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
